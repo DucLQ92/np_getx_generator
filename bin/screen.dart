@@ -127,20 +127,33 @@ void main(List<String> args) {
 
   List<String> listFileCreatedExisted = [];
   List<String> listFileCreatedSuccess = [];
+  List<String> listFileUpdatedSuccess = [];
   for (var name in listName) {
     if (name.trim().isNotEmpty) {
       Map result = createScreen(name.trim(), rootPath, bindingSub, controllerSub, screenSub, withRoute ? routeSub : '');
       listFileCreatedExisted.addAll(result['listFileCreatedExisted'] ?? []);
       listFileCreatedSuccess.addAll(result['listFileCreatedSuccess'] ?? []);
+      listFileUpdatedSuccess.addAll(result['listFileUpdatedSuccess'] ?? []);
     }
   }
-  print('❌  Number of file creation failed (already existing) ${listFileCreatedExisted.length}');
-  for (var element in listFileCreatedExisted) {
-    print('   ❗  $element');
+  if (listFileCreatedExisted.isNotEmpty) {
+    print('\n❌  Number of file creation failed (already existing) ${listFileCreatedExisted.length}');
+    for (var element in listFileCreatedExisted) {
+      print('   ❗  $element');
+    }
   }
 
-  print('✅ Number of files successfully created ${listFileCreatedSuccess.length}');
-  for (var element in listFileCreatedSuccess) {
-    print('   🚀  $element');
+  if (listFileCreatedSuccess.isNotEmpty) {
+    print('\n✅  Number of files successfully created ${listFileCreatedSuccess.length}');
+    for (var element in listFileCreatedSuccess) {
+      print('   🚀 $element');
+    }
+  }
+
+  if (listFileUpdatedSuccess.isNotEmpty) {
+    print('\n🔱️ Number of files successfully updated ${listFileUpdatedSuccess.length}');
+    for (var element in listFileUpdatedSuccess) {
+      print('   ⭕  $element');
+    }
   }
 }

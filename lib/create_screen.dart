@@ -6,6 +6,7 @@ Map createScreen(
     String name, String rootPath, String bindingSub, String controllerSub, String screenSub, String routeSub) {
   List<String> listFileCreatedExisted = [];
   List<String> listFileCreatedSuccess = [];
+  List<String> listFileUpdatedSuccess = [];
 
   String fileBindingName = '$rootPath$bindingSub${name.toLowerCase()}_binding.dart';
   String fileControllerName = '$rootPath$controllerSub${name.toLowerCase()}_controller.dart';
@@ -70,6 +71,7 @@ Map createScreen(
           contents =
               "import '$preSubAppPage$bindingSub${name.toLowerCase()}_binding.dart';\nimport '$preSubAppPage$screenSub${name.toLowerCase()}_screen.dart';\n${contents.replaceFirst(contents[contents.lastIndexOf(']')], "\tGetPage(name: AppRoute.${name.camelCase}Screen, page: () => const $classScreenName(), binding: $classBindingName()),\n\t]")}";
           fileAppPage.writeAsStringSync(contents);
+          listFileUpdatedSuccess.add(fileAppPageName);
         }
       }
 
@@ -85,6 +87,7 @@ Map createScreen(
           contents = contents.replaceFirst(contents[contents.lastIndexOf('}')],
               "\tstatic const String ${name.camelCase}Screen = '/${name.camelCase}Screen';\n}");
           fileAppRoute.writeAsStringSync(contents);
+          listFileUpdatedSuccess.add(fileAppRouteName);
         }
       }
     }
@@ -95,5 +98,6 @@ Map createScreen(
   return {
     'listFileCreatedExisted': listFileCreatedExisted,
     'listFileCreatedSuccess': listFileCreatedSuccess,
+    'listFileUpdatedSuccess': listFileUpdatedSuccess,
   };
 }
