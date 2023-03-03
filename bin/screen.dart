@@ -33,29 +33,33 @@ void main(List<String> args) {
       ((parsedArgs['rootPath'] ?? '').toString().isEmpty ? Constant.defaultRootPath : parsedArgs['rootPath'])
           .toString()
           .trim();
+  if (rootPath[0] == '/') rootPath = rootPath.substring(1);
   // default binding/
   String bindingSub =
       ((parsedArgs['bindingSub'] ?? '').toString().isEmpty ? Constant.defaultBindingSub : parsedArgs['bindingSub'])
           .toString()
           .trim();
+  if (bindingSub[0] == '/') bindingSub = bindingSub.substring(1);
   // default controller/
   String controllerSub = ((parsedArgs['controllerSub'] ?? '').toString().isEmpty
           ? Constant.defaultControllerSub
           : parsedArgs['controllerSub'])
       .toString()
       .trim();
+  if (controllerSub[0] == '/') controllerSub = controllerSub.substring(1);
   // default ui/screen/
   String screenSub =
       ((parsedArgs['screenSub'] ?? '').toString().isEmpty ? Constant.defaultScreenSub : parsedArgs['screenSub'])
           .toString()
           .trim();
-
+  if (screenSub[0] == '/') screenSub = screenSub.substring(1);
   // define route sub directory (optional)
   bool withRoute = parsedArgs['withRoute'] ?? false;
   String routeSub =
       ((parsedArgs['routeSub'] ?? '').toString().isEmpty ? Constant.defaultRouteSub : parsedArgs['routeSub'])
           .toString()
           .trim();
+  if (routeSub[0] == '/') routeSub = routeSub.substring(1);
 
   if (name.isEmpty && multi.isEmpty) {
     print('❌  Please enter file name by: --name <name> or --multi <name1,name2,...>');
@@ -151,8 +155,8 @@ void main(List<String> args) {
   }
 
   if (listFileUpdatedSuccess.isNotEmpty) {
-    print('\n🔱️ Number of files successfully updated ${listFileUpdatedSuccess.length}');
-    for (var element in listFileUpdatedSuccess) {
+    print('\n🔱️ Number of files successfully updated ${listFileUpdatedSuccess.toSet().length}');
+    for (var element in listFileUpdatedSuccess.toSet()) {
       print('   ⭕  $element');
     }
   }

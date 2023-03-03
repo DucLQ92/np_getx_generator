@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:np_getx_generator/recase.dart';
+import 'package:np_getx_generator/temp.dart';
 
 Map createScreen(
     String name, String rootPath, String bindingSub, String controllerSub, String screenSub, String routeSub) {
@@ -23,8 +24,10 @@ Map createScreen(
     for (int i = 0; i < '/'.allMatches(bindingSub).length; i++) {
       preSub += '../';
     }
-    fileBinding.writeAsStringSync(
-        "import 'package:get/get.dart';\n\nimport '$preSub$controllerSub${name.toLowerCase()}_controller.dart';\n\nclass $classBindingName extends Bindings {\n\t@override\n\tvoid dependencies() {\n\t\tGet.put($classControllerName());\n\t}\n}\n");
+    fileBinding.writeAsStringSync(Temp.binding
+        .replaceAll('{fileControllerPath}', '$preSub$controllerSub${name.toLowerCase()}_controller.dart')
+        .replaceAll('{classBindingName}', classBindingName)
+        .replaceAll('{classControllerName}', classControllerName));
     listFileCreatedSuccess.add(fileBindingName);
   } else {
     listFileCreatedExisted.add(fileBindingName);
@@ -33,8 +36,7 @@ Map createScreen(
   final fileController = File(fileControllerName);
   if (!fileController.existsSync()) {
     fileController.createSync(recursive: true);
-    fileController
-        .writeAsStringSync("import 'package:get/get.dart';\n\nclass $classControllerName extends GetxController {}\n");
+    fileController.writeAsStringSync(Temp.controller.replaceAll('{classControllerName}', classControllerName));
     listFileCreatedSuccess.add(fileControllerName);
   } else {
     listFileCreatedExisted.add(fileControllerName);
@@ -47,8 +49,10 @@ Map createScreen(
     for (int i = 0; i < '/'.allMatches(screenSub).length; i++) {
       preSub += '../';
     }
-    fileScreen.writeAsStringSync(
-        "import 'package:flutter/widgets.dart';\nimport 'package:get/get.dart';\nimport '$preSub$controllerSub${name.toLowerCase()}_controller.dart';\n\nclass $classScreenName extends GetView<$classControllerName> {\n\tconst $classScreenName({Key? key}) : super(key: key);\n\n\t@override\n\tWidget build(BuildContext context) {\n\t\treturn const Placeholder();\n\t}\n}\n");
+    fileScreen.writeAsStringSync(Temp.screen
+        .replaceAll('{fileControllerPath}', '$preSub$controllerSub${name.toLowerCase()}_controller.dart')
+        .replaceAll('{classScreenName}', classScreenName)
+        .replaceAll('{classControllerName}', classControllerName));
     listFileCreatedSuccess.add(fileScreenName);
 
     if (routeSub.isNotEmpty) {
@@ -62,8 +66,12 @@ Map createScreen(
       final fileAppPage = File(fileAppPageName);
       if (!fileAppPage.existsSync()) {
         fileAppPage.createSync(recursive: true);
-        fileAppPage.writeAsStringSync(
-            "import '$preSubAppPage$bindingSub${name.toLowerCase()}_binding.dart';\nimport '$preSubAppPage$screenSub${name.toLowerCase()}_screen.dart';\nimport 'package:get/get.dart';\nimport 'app_route.dart';\n\nclass AppPage {\n\tstatic final pages = [\n\t\tGetPage(name: AppRoute.${name.camelCase}Screen, page: () => const $classScreenName(), binding: $classBindingName()),\n\t];\n}\n");
+        fileAppPage.writeAsStringSync(Temp.appPage
+            .replaceAll('{fileBindingPath}', '$preSubAppPage$bindingSub${name.toLowerCase()}_binding.dart')
+            .replaceAll('{fileScreenPath}', '$preSubAppPage$screenSub${name.toLowerCase()}_screen.dart')
+            .replaceAll('{nameCamelCase}', name.camelCase)
+            .replaceAll('{classScreenName}', classScreenName)
+            .replaceAll('{classBindingName}', classBindingName));
         listFileCreatedSuccess.add(fileAppPageName);
       } else {
         String contents = fileAppPage.readAsStringSync();
